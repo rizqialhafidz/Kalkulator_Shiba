@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shiba Calculator - Projek PAS RPL 2026</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="calculator-app">
+        <main class="calculator-card">
+            <!-- Header Oranye Melengkung dengan Maskot dan Layar -->
+            <header class="calc-header">
+                <div class="header-top-bar">
+                    <!-- Tombol Petunjuk Penggunaan (User Guide) -->
+                    <button id="btn-guide-toggle" class="header-icon-btn" aria-label="Open User Guide" title="User Guide (English)">
+                        <svg class="header-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </button>
+
+                    <!-- Tombol Riwayat (Ikon Jam) -->
+                    <button id="btn-history-toggle" class="header-icon-btn" aria-label="Open History" title="History">
+                        <svg class="header-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Layar Kalkulator -->
+                <section class="calc-display" aria-label="Calculator Display">
+                    <!-- Baris kecil untuk ekspresi (contoh: 124 * 56) -->
+                    <div id="baris-ekspresi" class="expression-line" aria-live="polite"></div>
+                    <!-- Baris besar untuk hasil / input saat ini -->
+                    <div id="baris-hasil" class="result-line" aria-live="polite" aria-label="Result">0</div>
+                    <!-- Pesan error merah -->
+                    <div id="pesan-error" class="error-line" aria-live="assertive" aria-label="Error Message"></div>
+                </section>
+
+                <!-- Maskot Shiba Buatan Sendiri (SVG Bebas Hak Cipta - PKN) -->
+                <div class="shiba-container" aria-hidden="true">
+                    <svg class="shiba-svg" viewBox="0 0 160 125" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Telinga Kiri -->
+                        <path d="M 28 58 Q 20 22 42 16 Q 58 22 62 46 Z" fill="#f4922b" stroke="#e07d1a" stroke-width="2" />
+                        <path d="M 33 50 Q 28 26 42 22 Q 52 28 54 44 Z" fill="#ffbca6" />
+                        
+                        <!-- Telinga Kanan -->
+                        <path d="M 132 58 Q 140 22 118 16 Q 102 22 98 46 Z" fill="#f4922b" stroke="#e07d1a" stroke-width="2" />
+                        <path d="M 127 50 Q 132 26 118 22 Q 108 28 106 44 Z" fill="#ffbca6" />
+                        
+                        <!-- Kepala Shiba -->
+                        <path d="M 30 65 Q 26 95 60 106 Q 80 110 100 106 Q 134 95 130 65 Q 128 35 80 34 Q 32 35 30 65 Z" fill="#f4922b" />
+                        
+                        <!-- Pola Putih Pipi dan Moncong -->
+                        <path d="M 32 78 Q 30 104 60 106 Q 80 108 100 106 Q 130 104 128 78 Q 118 70 100 78 Q 80 84 60 78 Q 42 70 32 78 Z" fill="#ffffff" />
+                        
+                        <!-- Alis Putih Khas Shiba -->
+                        <ellipse cx="62" cy="48" rx="4.5" ry="3.5" fill="#ffffff" />
+                        <ellipse cx="98" cy="48" rx="4.5" ry="3.5" fill="#ffffff" />
+                        
+                        <!-- Pipi Merona (Blush) -->
+                        <ellipse cx="46" cy="80" rx="8" ry="4.5" fill="#ff7657" opacity="0.45" />
+                        <ellipse cx="114" cy="80" rx="8" ry="4.5" fill="#ff7657" opacity="0.45" />
+                        
+                        <!-- Mata Tersenyum Riang -->
+                        <path d="M 54 62 Q 63 54 72 62" fill="none" stroke="#2a1f1d" stroke-width="3" stroke-linecap="round" />
+                        <path d="M 88 62 Q 97 54 106 62" fill="none" stroke="#2a1f1d" stroke-width="3" stroke-linecap="round" />
+                        
+                        <!-- Hidung Kecil Hitam -->
+                        <ellipse cx="80" cy="72" rx="5" ry="3.5" fill="#2a1f1d" />
+                        
+                        <!-- Garis Mulut dan Lidah Menjulur Lucu -->
+                        <path d="M 75 75 Q 80 78 80 76 Q 80 78 85 75" fill="none" stroke="#2a1f1d" stroke-width="2.5" stroke-linecap="round" />
+                        <path d="M 76 77 C 76 86 84 86 84 77 Z" fill="#ff5a79" />
+                        <path d="M 80 77 L 80 82" stroke="#d83a56" stroke-width="1.5" stroke-linecap="round" />
+
+                        <!-- Dua Cakar Depan Lucu yang Bersandar di Tepi -->
+                        <!-- Cakar Kiri -->
+                        <path d="M 22 108 Q 22 96 34 96 Q 46 96 46 108 Z" fill="#ffffff" stroke="#e07d1a" stroke-width="2" />
+                        <line x1="30" y1="100" x2="30" y2="105" stroke="#f4922b" stroke-width="2" stroke-linecap="round" />
+                        <line x1="38" y1="100" x2="38" y2="105" stroke="#f4922b" stroke-width="2" stroke-linecap="round" />
+
+                        <!-- Cakar Kanan -->
+                        <path d="M 114 108 Q 114 96 126 96 Q 138 96 138 108 Z" fill="#ffffff" stroke="#e07d1a" stroke-width="2" />
+                        <line x1="122" y1="100" x2="122" y2="105" stroke="#f4922b" stroke-width="2" stroke-linecap="round" />
+                        <line x1="130" y1="100" x2="130" y2="105" stroke="#f4922b" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </div>
+
+                <!-- Pembatas Lengkungan Organik (Wavy Curve) -->
+                <div class="curved-divider" aria-hidden="true">
+                    <svg viewBox="0 0 360 48" preserveAspectRatio="none">
+                        <path d="M 0 28 C 100 48, 220 10, 360 26 L 360 48 L 0 48 Z" fill="#ffffff" />
+                    </svg>
+                </div>
+            </header>
+
+            <!-- Bagian Tombol Kalkulator (Keypad) -->
+            <section class="calc-body">
+                <div class="keypad-grid">
+                    <!-- Baris 1: C, +/-, del, ÷ -->
+                    <button type="button" class="btn btn-action-orange" data-action="clear" aria-label="Clear" title="Clear (C)">C</button>
+                    <button type="button" class="btn btn-action-orange" data-action="toggle-sign" aria-label="Toggle Sign" title="Toggle Sign (+/-)">+/-</button>
+                    <button type="button" class="btn btn-action-orange" data-action="delete" aria-label="Delete" title="Delete (del)">del</button>
+                    <button type="button" class="btn btn-operator" data-operator="/" aria-label="Division" title="Division (÷)">÷</button>
+
+                    <!-- Baris 2: 7, 8, 9, × -->
+                    <button type="button" class="btn btn-number" data-number="7">7</button>
+                    <button type="button" class="btn btn-number" data-number="8">8</button>
+                    <button type="button" class="btn btn-number" data-number="9">9</button>
+                    <button type="button" class="btn btn-operator" data-operator="*" aria-label="Multiplication" title="Multiplication (×)">×</button>
+
+                    <!-- Baris 3: 4, 5, 6, - -->
+                    <button type="button" class="btn btn-number" data-number="4">4</button>
+                    <button type="button" class="btn btn-number" data-number="5">5</button>
+                    <button type="button" class="btn btn-number" data-number="6">6</button>
+                    <button type="button" class="btn btn-operator" data-operator="-" aria-label="Subtraction" title="Subtraction (−)">−</button>
+
+                    <!-- Baris 4: 1, 2, 3, + -->
+                    <button type="button" class="btn btn-number" data-number="1">1</button>
+                    <button type="button" class="btn btn-number" data-number="2">2</button>
+                    <button type="button" class="btn btn-number" data-number="3">3</button>
+                    <button type="button" class="btn btn-operator" data-operator="+" aria-label="Addition" title="Addition (+)">+</button>
+
+                    <!-- Baris 5: 0, ,, = (sama dengan melebar 2 kolom) -->
+                    <button type="button" class="btn btn-number" data-number="0">0</button>
+                    <button type="button" class="btn btn-number" data-action="comma" aria-label="Decimal comma" title="Decimal comma (,)">,</button>
+                    <button type="button" class="btn btn-operator btn-equals" data-action="equals" aria-label="Result" title="Calculate Result (=)">=</button>
+                </div>
+            </section>
+
+            <!-- Panel Riwayat Perhitungan (History Drawer) -->
+            <aside id="panel-riwayat" class="drawer-panel" aria-hidden="true">
+                <div class="drawer-header">
+                    <h2 class="drawer-title">History</h2>
+                    <button id="btn-history-close" class="drawer-close-btn" aria-label="Close History">✕</button>
+                </div>
+                <div id="daftar-riwayat" class="history-list">
+                    <p class="history-empty">No history yet</p>
+                </div>
+                <div class="drawer-footer">
+                    <button id="btn-clear-history" type="button" class="btn-clear-history">Clear History</button>
+                </div>
+            </aside>
+
+            <!-- Panel Panduan Penggunaan Bahasa Inggris (English User Guide) -->
+            <aside id="panel-panduan" class="drawer-panel" aria-hidden="true">
+                <div class="drawer-header">
+                    <h2 class="drawer-title">User Guide</h2>
+                    <button id="btn-guide-close" class="drawer-close-btn" aria-label="Close User Guide">✕</button>
+                </div>
+                <div class="guide-content">
+                    <div class="guide-section">
+                        <h3>About Calculator</h3>
+                        <p>A web calculator built with vanilla HTML, CSS, and JavaScript for the SMK Negeri 4 Tanjungpinang Class XII RPL Final Assessment 2026.</p>
+                    </div>
+                    <div class="guide-section">
+                        <h3>Key Operations</h3>
+                        <ul class="guide-list">
+                            <li><strong>Addition (+)</strong>: Computes the sum of two numbers.</li>
+                            <li><strong>Subtraction (−)</strong>: Subtracts the second number from the first.</li>
+                            <li><strong>Multiplication (×)</strong>: Multiplies two numbers (e.g. 124 * 56).</li>
+                            <li><strong>Division (÷)</strong>: Divides first number by second. Division by zero triggers an error.</li>
+                            <li><strong>Clear (C)</strong>: Resets display and calculation without clearing history.</li>
+                            <li><strong>Delete (del)</strong>: Removes the last entered digit.</li>
+                            <li><strong>Toggle Sign (+/-)</strong>: Inverts number sign (+ / -).</li>
+                            <li><strong>Result (=)</strong>: Executes calculation with rounding up to 10 decimal digits.</li>
+                        </ul>
+                    </div>
+                    <div class="guide-section">
+                        <h3>Validation & Errors</h3>
+                        <p>Displays clear red alerts on screen when:</p>
+                        <ul class="guide-list">
+                            <li>An operator is chosen without entering a number first.</li>
+                            <li>The equals sign is pressed without the second number.</li>
+                            <li>A number is divided by zero.</li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
